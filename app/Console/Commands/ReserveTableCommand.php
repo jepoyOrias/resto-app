@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
+use App\Models\Table;
 use App\Models\Reservation;
 use App\Events\ReservedTable;
 use Illuminate\Console\Command;
@@ -29,13 +30,16 @@ class ReserveTableCommand extends Command
     public function handle()
     {
         $request_date = now();
-        $startTime = Carbon::createFromTime($request_date->hour,$request_date->minute,$request_date->second);
-        $endTime = Carbon::createFromTime($request_date->addHours(1)->hour,$request_date->minute,$request_date->second);
+        $currentTime = now()->timezone('Asia/Manila')->startOfHour()->format('H:i:s');
 
-       $reservation = Reservation::whereDate('reservation_date',$request_date)
-        ->whereBetween('reservation_date',[$startTime, $endTime])
-        ->get();
-
-        event(new ReservedTable($reservation));
+                        
+       $reservations =  Reservation::with('table')
+                        ->whereDate('reservation_date',$request_date)
+                        ->where('reservation_time', '>=', '9:00:00')
+                        ->where('reservation_time', '<=', '20:00:00')
+                        ->where('reservation_time', '>=' ,$currentTime)
+                        ->get();
+                        
+        event(new ReservedTable($reservations));
     }
 }

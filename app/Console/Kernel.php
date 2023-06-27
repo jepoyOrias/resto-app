@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('reserved:table')->everyMinute();
+        $schedule->command('reserved:table')->timezone('Asia/Manila')->between('9:00', '20:00')->everyMinute()->withoutOverlapping();
     }
 
     /**

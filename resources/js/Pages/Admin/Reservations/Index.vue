@@ -88,14 +88,16 @@
                                                         </v-col>
                                                         <v-col cols="12">
                                                             <v-select
-                                                            :disabled="availableTimes.length <= 0"
-                                                            v-model="formItem.reservation_time" 
+                                                                :disabled="availableTimes.length <= 0"
+                                                                v-model="formItem.reservation_time" 
                                                                 :items="availableTimes"
                                                                 label="Select Time"
+                                                                return-object
                                                                 :error-messages="props.errors?.reservation_time"
+                                                                @input="test"
                                                             >
                                                             <template v-slot:selection="{ item }">
-                                                                {{ moment(item.raw.time, "HH:mm:ss").format("hh:mm A") }}
+                                                                {{ moment(item.raw.time ? item.raw.time : item.raw , "HH:mm:ss").format("hh:mm A") }}
                                                                 <span>
                                                                     <v-chip
                                                                     class="caption ms-3"
@@ -106,11 +108,12 @@
                                                                     </v-chip>
                                                                 </span>
                                                             </template>
-                                                            <template #item="{ item, props: {onClick} }" >
+                                                            <template #item="{ item, props: {onClick, title, value} }" >
                                                                 <v-list-item 
-                                                                @click="onClick" 
+                                                                @click="onClick"
                                                                 :class="item.raw.isReserved || item.raw.isAlreadyPassed? 'disabled' :''"> 
                                                                     <v-list-item-title>
+                                                                        {{ item.value }}
                                                                         {{ moment(item.raw.time, "HH:mm:ss").format("hh:mm A") }}
                                                                        <span>
                                                                             <v-chip
@@ -270,6 +273,7 @@ const props = defineProps({
 
 
 const formItem = reactive({
+    id: null,
     name: null,
     first_name: null,
     last_name: null,
@@ -279,6 +283,7 @@ const formItem = reactive({
     reservation_date:null,
     reservation_time: null,
     table_id: null,
+    currentTime : moment().format('HH:mm::ss'),
 });
 
 
@@ -342,6 +347,8 @@ const  getAvailableTime = ()=>{
         params:{
         'reservation_date': formItem.reservation_date,
         'table_id': formItem.table_id.id,
+        'currentTime': formItem.currentTime,
+        'id': formItem.id,
        }
     }).then((res)=>{
         availableTimes.value = res?.data?.availableTimes;
@@ -400,11 +407,11 @@ const fetchReservations = () => {
 const editItem = (item) => {
     Object.assign(formItem, item);
     formItem.selectedCategory = item.categories;
-    formItem.reservation_date = moment(item.reservation_date).utc().format('YYYY-MM-DDTHH:mm');
+    formItem.reservation_date = moment(item.reservation_date).utc().format('YYYY-MM-DD');
     formItem.table_id = item.table;
     dialog.value = true;
     editMode.value = true;
-   
+    getAvailableTime();
 }
 
 
@@ -445,6 +452,11 @@ function deleteItemConfirm(isDeleting) {
     });
 }
 
+
+const test = ()=>{
+
+        console.log(test);
+}
 
 
 </script>

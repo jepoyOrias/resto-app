@@ -22,6 +22,7 @@
                             </v-chip>
                         </v-card-item>
                     </v-card>
+                    <TodaysReservation  :todaysReservation="todaysReservation"/>
                 </v-col>
             </v-row>
            
@@ -31,38 +32,12 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import RecentlyMenuCard from '@/Components/RecentlyMenuCard.vue';
+import TodaysReservation from '@/Components/Partials/Dashboard/TodaysReservation.vue';
 import {onMounted, ref,reactive, watchEffect, watch} from 'vue';
 import { Head,usePage } from '@inertiajs/vue3';
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
-
-Pusher.logToConsole = true;
-
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: '56fad58ba6dde752b3f0',
-    cluster: 'ap1',
-    // Add other relevant configuration options
-});
-
-window.Echo.channel('reserved-tables')
-            .listen('ViewReserveDateTime', (event) => {
-                // Handle the event and update the data
-                    console.log(data);
-            });
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     // Add other configuration options as needed
-// });
 
 
-const page = usePage();
-console.log(page.props);
 const recentlyMenus = reactive([]);
-
 onMounted (()=>{
     
     var tempMenus =  props.recentlyMenus
@@ -75,12 +50,9 @@ onMounted (()=>{
 const props = defineProps({
     recentlyMenus: Object,
     categories: Object,
-    reservations: Object,
+    todaysReservation: Object,
 });
 
-watchEffect(()=>{
-    console.log(props.reservations)
-})
 
 
 </script>
