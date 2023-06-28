@@ -17,7 +17,16 @@
                             Categories
                         </v-card-title>
                         <v-card-item>
-                            <v-chip class="ma-2 bg-blue-darken-3" v-for="category in props.categories" :key="category.id">
+                            <v-chip 
+                            class="ma-2 bg-blue-darken-3"
+                            @click="sortMenus">
+                            All categories
+                            </v-chip>
+                            <v-chip 
+                            class="ma-2 bg-blue-darken-3" 
+                            v-for="category in props.categories" :key="category.id"
+                            @click="sortMenus(category.id)"
+                            >
                                 {{ category.name }}
                             </v-chip>
                         </v-card-item>
@@ -35,23 +44,50 @@ import RecentlyMenuCard from '@/Components/RecentlyMenuCard.vue';
 import TodaysReservation from '@/Components/Partials/Dashboard/TodaysReservation.vue';
 import {onMounted, ref,reactive, watchEffect, watch} from 'vue';
 import { Head,usePage } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 
 
-const recentlyMenus = reactive([]);
-onMounted (()=>{
-    
-    var tempMenus =  props.recentlyMenus
+const recentlyMenus = ref();
+var  tempMenus = [];
+watchEffect(()=>{
+    tempMenus = props.recentlyMenus;
     tempMenus.forEach(element => {
         Object.assign(element, {"show":true});
     });
-    
-    Object.assign(recentlyMenus, tempMenus);
+    recentlyMenus.value = tempMenus;
 })
+
+
+
+
+
 const props = defineProps({
     recentlyMenus: Object,
     categories: Object,
     todaysReservation: Object,
+    sort: {
+        type: String,
+        default : ""
+    }
 });
+
+function sortMenus(category_id = ''){
+    router.visit('/admin',{
+    method:'get',
+    preserveState: true,
+    only:['recentlyMenus','sort'],
+    category_id: category_id,
+     onSuccess: function(){
+        console.log(props.sort);
+     }
+  }
+
+
+  );
+
+}
+
+
 
 
 

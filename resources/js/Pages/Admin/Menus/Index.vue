@@ -41,7 +41,7 @@
                                                 <v-form ref="categoryForm">
                                                     <v-row>
                                                         <v-col cols="12">
-                                                            <v-text-field v-model="formItem.name" label="Category Name"
+                                                            <v-text-field v-model="formItem.name" label="Menu Name"
                                                                 :error-messages="props.errors?.name"></v-text-field>
                                                         </v-col>
                                                         <v-col cols="12">

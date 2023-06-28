@@ -74,8 +74,6 @@ class ReservationController extends Controller
         }
        
       
-      
-      
         $table = Table::findOrFail($validatedRequest['table_id']);
 
         if ($request->guest_number > $table->guest_number) {
@@ -159,15 +157,14 @@ class ReservationController extends Controller
 
 
     private function getTodaysReservations($request_date){
-        $reservations = DB::table('reservations')
-                        ->join('tables', 'reservations.table_id', '=', 'tables.id')
-                        ->select('reservations.*', 'tables.name as table_name', 'tables.image as table_image')
-                        ->whereDate('reservations.reservation_date', $request_date)
-                        ->where('reservations.reservation_time', '>=', '09:00:00')
-                        ->where('reservations.reservation_time', '<=', '20:00:00')
-                        ->where('reservations.reservation_time', '>=', now()->timezone('Asia/Manila')->startOfHour()->format('H:i:s'))
-                        ->orderBy('reservations.reservation_time')
-                        ->get();
+        $currentTime = now()->timezone('Asia/Manila')->startOfHour()->format('H:i:s');
+        $reservations =  Reservation::with('table:id,name,image')
+                        ->whereDate('reservation_date',$request_date)
+                        ->where('reservation_time', '>=', '9:00:00')
+                        ->where('reservation_time', '<=', '20:00:00')
+                        ->where('reservation_time', '>=' ,$currentTime)
+                        ->orderBy('reservation_time')
+                        ->get()->toArray();
      
        
         return event(new ReservedTable($reservations));

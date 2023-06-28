@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\ProfileController;
+use Database\Seeders\Admin;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;

@@ -82,7 +82,7 @@ class MenuController extends Controller
     }
 
 
-    public function update(Request $request, Category $menu){
+    public function update(Request $request, Menu $menu){
 
         /*
             * Checking if threre is an image in Request 
@@ -107,7 +107,7 @@ class MenuController extends Controller
             'name' => $request->formItem['name'],
             'description' => $request->formItem['description'],
             'image' => $image_path,
-            'price' => $request->price
+            'price' => $request->formItem['price'],
         ]);
 
 
@@ -115,13 +115,17 @@ class MenuController extends Controller
          * Check the selected categories
          * If existing categories are their update the pivot table corresponding to the selectedCategory
          */
+        
 
-        if($request->has('selectedCategory')){
-            foreach($request->selectedCategory as $menu){
-                $menu->categories()->sync($menu);
-            }
+        if($request->formItem['selectedCategory']){
+      
+            $menu->categories()->sync($request->formItem['selectedCategory']);
+               
         }
         
+
+     
+
         return to_route('admin.menus.index');
         
     }

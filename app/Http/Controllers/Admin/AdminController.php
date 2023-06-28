@@ -13,31 +13,31 @@ use Illuminate\Http\Request;
 use App\Events\ReservedTable;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 
 class AdminController extends Controller
 {
-    public function index(){
-        $menus = Menu::orderBy('id','desc')->take(5)->get();
-        $categories = Category::all();
+    public function index(Request $request){
+        $categoryId = $request->input('category_id');
+         $menus = Menu::with('categories')->orderBy('name','asc')->take(6)->get();
+        $categories = Category::orderBy('name', 'asc')->get();
+        $currentTime = now()->timezone('Asia/Manila')->startOfHour()->format('H:i:s');
 
-      $reservation =  DB::table('reservations')
-                        ->join('tables', 'reservations.table_id', '=', 'tables.id')
-                        ->select('reservations.*', 'tables.name as table_name', 'tables.image as table_image')
-                        ->whereDate('reservations.reservation_date', Carbon::now())
-                        ->where('reservations.reservation_time', '>=', '09:00:00')
-                        ->where('reservations.reservation_time', '<=', '20:00:00')
-                        ->where('reservations.reservation_time', '>=', now()->timezone('Asia/Manila')->startOfHour()->format('H:i:s'))
-                        ->orderBy('reservations.reservation_time')
-                        ->get();
+      $reservation = Reservation::with('table:id,name,image')
+                    ->whereDate('reservation_date',Carbon::now()->startOfDay())
+                    ->where('reservation_time', '>=', '9:00:00')
+                    ->where('reservation_time', '<=', '20:00:00')
+                    ->where('reservation_time', '>=' ,$currentTime)
+                    ->orderBy('reservation_time')
+                    ->get()->toArray();
 
 
         return Inertia::render('Admin/Index',[
              'recentlyMenus' => $menus,
              'categories' => $categories,
-             'todaysReservation' => $reservation
+             'todaysReservation' => $reservation,
+             'sort'=> $categoryId,
         ]);
-
-       
     }
 
     

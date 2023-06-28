@@ -19,11 +19,10 @@ const rail = ref(false);
 <template>
  <v-app id="inspire">
     <v-navigation-drawer
-    :rail="rail"
     v-model="drawer"
     width="280"
     permanent
-    @click="rail = false"
+    class=""
             >
             <v-img
                 src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
@@ -31,42 +30,33 @@ const rail = ref(false);
                 cover
                 ></v-img>
                 <v-divider></v-divider>
-                <v-list density="compact" class="px-2">
+                <v-list density="compact" class="">
                     <LinkItem v-for="item in menuItems" :item="item" :rail="rail" :key="item.name" ></LinkItem>
                 </v-list>
+                <v-list> 
+                            
+                            
+                </v-list>
                 <template v-slot:append>
-                    <v-menu>
-                        <template v-slot:activator="{ props }">
-                            <v-list>
-                                <v-list-item
-                                    prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
-                                    :title="$page.props.auth.user.name"
-                                    :subtitle="$page.props.auth.user.email"
-                                    v-bind="props"
-                                ></v-list-item>
-                            </v-list>
-                        </template>
-                        <v-list> 
+                        <div class="pa-2">
                             <v-list-item  prepend-icon="mdi-cog">
-                                <Link :href="route('profile.edit')"> Profile </Link>
+                                <Link :href="route('profile.edit')" as="button"> Profile </Link>
                             </v-list-item>
                             <v-list-item prepend-icon="mdi-logout"> 
                                 <Link :href="route('logout')" method="post" as="button">Logout</Link>
                             </v-list-item>
-                            
-                        </v-list>
-                    </v-menu>
+                        </div>
                 </template>
             </v-navigation-drawer>
 
 
 
-    <v-app-bar>
-        <v-btn size="large" :icon="!rail ? 'mdi-close' :'mdi-menu'" color="warning" @click="rail = !rail"></v-btn>
-      <v-toolbar-title>Application</v-toolbar-title>
-    </v-app-bar>
+                <v-app-bar>
+                    <v-btn size="large" :icon="drawer ? 'mdi-close' :'mdi-menu'" color="warning" @click="drawer = !drawer"></v-btn>
+                    <v-toolbar-title>Application</v-toolbar-title>
+                </v-app-bar>
 
-    <v-main>
+            <v-main>
                 <slot />
             </v-main>
   </v-app>

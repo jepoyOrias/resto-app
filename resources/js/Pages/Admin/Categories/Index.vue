@@ -395,8 +395,6 @@ function deleteItemConfirm(isDeleting){
     }
   });
 }
-
-console.log(props.categories)
 </script>
 
 
