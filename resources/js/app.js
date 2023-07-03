@@ -10,6 +10,8 @@ import * as directives from 'vuetify/directives'
 import * as labsComponents from 'vuetify/labs/components'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import '@mdi/font/css/materialdesignicons.css'
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const vuetify = createVuetify({
   ...components,
@@ -22,7 +24,8 @@ const vuetify = createVuetify({
         dark: false,
         colors: {
           light: "#FAFAFA",
-          primary: '#43A047'
+          primary: '#43A047',
+          warning: '#d08634'
         }
       }
     }
@@ -37,7 +40,7 @@ const vuetify = createVuetify({
 })
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
-
+AOS.init();
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
